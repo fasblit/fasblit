@@ -3,149 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jester Life Simulator</title>
+    <title>Jester Life Simulator - Ultimate Sürüm</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Segoe UI', sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .container { width: 100%; max-width: 1100px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        
+        /* İstatistik Paneli */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .stat-card { background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; text-align: center; }
-        .stat-val { font-size: 18px; font-weight: 700; color: #f59e0b; }
-        .game-layout { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
-        .nav-menu { display: flex; flex-direction: column; gap: 5px; }
-        .nav-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px; text-align: left; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .nav-btn:hover, .nav-btn.active { background: #f59e0b; color: #0f172a; }
-        .main-content { background: #1e293b; border-radius: 16px; padding: 25px; border: 1px solid #334155; min-height: 500px; }
+        .stat-val { font-size: 20px; font-weight: 700; color: #f59e0b; }
+        
+        /* Ana Düzen */
+        .game-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #f59e0b; color: #0f172a; border-color: #f59e0b; }
+        
+        /* İçerik Alanı */
+        .main-content { background: #1e293b; border-radius: 16px; padding: 30px; border: 1px solid #334155; min-height: 500px; position: relative; }
         .location-view { display: none; }
         .location-view.active { display: block; }
-        .photo-area { width: 100%; height: 250px; background: #000; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        
+        /* Görseller */
+        .photo-area { width: 100%; height: 300px; background: #000; border-radius: 12px; margin-bottom: 20px; overflow: hidden; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; color: #475569;}
         .photo-area img { width: 100%; height: 100%; object-fit: cover; }
-        .btn { background: #f59e0b; color: #0f172a; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; margin: 3px; font-weight: 600; }
+        
+        /* Butonlar ve Girdiler */
+        h3 { color: #f59e0b; margin-bottom: 10px; font-size: 1.5rem; }
+        h4 { color: #cbd5e1; margin-top: 20px; margin-bottom: 10px; }
+        p { color: #94a3b8; margin-bottom: 15px; font-size: 14px; }
+        .btn { background: #f59e0b; color: #0f172a; border: none; padding: 10px 15px; font-weight: 600; border-radius: 6px; cursor: pointer; margin: 4px; transition: 0.2s; }
+        .btn:hover { background: #d97706; }
         .btn-danger { background: #ef4444; color: #fff; }
-        .log-box { margin-top: 20px; background: #000; border: 1px solid #334155; padding: 10px; height: 120px; overflow-y: auto; font-size: 13px; color: #94a3b8; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-blue { background: #3b82f6; color: #fff; }
+        .btn-blue:hover { background: #2563eb; }
+        input[type="number"] { padding: 10px; border-radius: 6px; border: none; outline: none; width: 120px; margin-right: 5px; }
+        
+        /* Konsol */
+        .log-box { margin-top: 20px; background: #000; border: 1px solid #334155; padding: 15px; border-radius: 10px; height: 150px; overflow-y: auto; font-size: 14px; color: #10b981; font-family: monospace; }
+        .union-badge { background: #3b82f6; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-top: 5px; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Üst İstatistikler -->
     <div class="stats-grid">
-        <div class="stat-card">Açlık: <div id="stat-hunger" class="stat-val">100</div></div>
-        <div class="stat-card">Enerji: <div id="stat-energy" class="stat-val">100</div></div>
-        <div class="stat-card">Nakit: <div id="stat-money" class="stat-val">5000</div></div>
-        <div class="stat-card">Moral: <div id="stat-mood" class="stat-val">100</div></div>
+        <div class="stat-card">Açlık: <div id="stat-hunger" class="stat-val">100 / 100</div></div>
+        <div class="stat-card">Enerji: <div id="stat-energy" class="stat-val">100 / 100</div></div>
+        <div class="stat-card">Nakit Para: <div id="stat-money" class="stat-val">5000 🪙</div></div>
+        <div class="stat-card">Moral: <div id="stat-mood" class="stat-val">100 / 100</div></div>
+        <div class="stat-card">Dernek / Birlik: <div id="stat-union" class="stat-val" style="font-size:14px; color:#3b82f6;">Yok</div></div>
     </div>
 
     <div class="game-layout">
+        <!-- Sol Menü -->
         <div class="nav-menu">
             <button class="nav-btn active" onclick="go('home', this)">Evim</button>
-            <button class="nav-btn" onclick="go('work', this)">İş Merkezi</button>
+            <button class="nav-btn" onclick="go('work', this)">İş & Kariyer Merkezi</button>
             <button class="nav-btn" onclick="go('market', this)">Süpermarket</button>
             <button class="nav-btn" onclick="go('gallery', this)">Araç Galerisi</button>
-            <button class="nav-btn" onclick="go('tech', this)">Teknoloji</button>
-            <button class="nav-btn" onclick="go('fight', this)">Dövüş Dükkanı</button>
-            <button class="nav-btn" onclick="go('arena', this)">Dövüş Meydanı</button>
+            <button class="nav-btn" onclick="go('tech', this)">Teknoloji Dükkanı</button>
+            <button class="nav-btn" onclick="go('fight', this)">Dövüş Mühimmatı</button>
+            <button class="nav-btn" onclick="go('arena', this)">Yeraltı Dövüş Kulübü</button>
             <button class="nav-btn" onclick="go('casino', this)">Kumarhane</button>
-            <button class="nav-btn" onclick="go('pavyon', this)">Pavyon</button>
-            <button class="nav-btn" onclick="go('crypto', this)">Kripto Ofisi</button>
+            <button class="nav-btn" onclick="go('pavyon', this)">Pavyon Geceleri</button>
+            <button class="nav-btn" onclick="go('crypto', this)">Kripto Merkezi</button>
             <button class="nav-btn" onclick="go('airport', this)">Havaalanı</button>
             <button class="nav-btn" onclick="go('wedding', this)">Düğün Salonu</button>
         </div>
 
+        <!-- Sağ İçerik -->
         <div class="main-content">
+            
+            <!-- EVİM -->
             <div id="loc-home" class="location-view active">
-                <div class="photo-area"><img src="Ev.png"></div>
+                <div class="photo-area"><img src="Ev.png" alt="Ev"></div>
                 <h3>Güvenli Ev</h3>
-                <button class="btn" onclick="doAction('sleep')">Uyu ve Dinlen</button>
+                <p>Dinlenip enerjini toplayabileceğin alan.</p>
+                <button class="btn" onclick="doAction('sleep')">Uyu ve Dinlen (+Enerji, -Açlık)</button>
             </div>
+
+            <!-- İŞ MERKEZİ -->
             <div id="loc-work" class="location-view">
-                <h3>İş Merkezi</h3>
-                <button class="btn" onclick="workJob('kurye')">Kuryelik (200 🪙)</button>
-                <button class="btn" onclick="workJob('yazilim')">Yazılım (600 🪙)</button>
+                <h3>Kariyer ve Dernek Merkezi</h3>
+                <p>Çalışarak para kazan. Bir derneğe üyeysen, kendi mesleğinde kazanç çarpanı elde edersin!</p>
+                
+                <h4>Dernekler (Sadece birine üye olabilirsin)</h4>
+                <button class="btn btn-blue" onclick="joinUnion('karaambar')">Kara Ambar Derneği (Tırcı x3)</button>
+                <button class="btn btn-blue" onclick="joinUnion('mobilya')">Marangozlar Odası (Mobilyacı x2)</button>
+                <button class="btn btn-blue" onclick="joinUnion('maden')">Madenciler Sendikası (Madenci x2.5)</button>
+                <hr style="border:1px solid #334155; margin: 15px 0;">
+                
+                <h4>İş İlanları</h4>
+                <button class="btn" onclick="workJob('kurye')">Kuryelik Yap (200 🪙)</button>
+                <button class="btn" onclick="workJob('yazilim')">Yazılım Geliştir (600 🪙)</button>
+                <br><br>
+                <button class="btn" onclick="workJob('mobilyaci')">Mobilyacıda Çalış (100 🪙 + Dernek)</button>
+                <button class="btn" onclick="workJob('tirci')">Tırcılık Yap (150 🪙 + Dernek)</button>
+                <button class="btn" onclick="workJob('madenci')">Madene İn (200 🪙 + Dernek)</button>
             </div>
+
+            <!-- SÜPERMARKET -->
             <div id="loc-market" class="location-view">
-                <div class="photo-area"><img src="market.png"></div>
-                <button class="btn" onclick="buyItem('Sandviç', 50)">Sandviç Al</button>
+                <div class="photo-area"><img src="market.png" alt="Market"></div>
+                <h3>Şehir Marketi</h3>
+                <button class="btn" onclick="buyItem('Sandviç', 50, 'hunger')">Sandviç Al & Ye (-50 🪙, +Tokluk)</button>
             </div>
+
+            <!-- ARAÇ GALERİSİ -->
             <div id="loc-gallery" class="location-view">
-                <div class="photo-area"><img src="Araç Galerisi.png"></div>
-                <button class="btn" onclick="buyVehicle('Skyline', 8000)">Skyline Satın Al</button>
+                <div class="photo-area"><img src="Araç Galerisi.png" alt="Galeri"></div>
+                <h3>Lüks Araç Galerisi</h3>
+                <button class="btn" onclick="buyVehicle('Nissan Skyline GT-R', 8000)">Skyline GT-R Al (-8000 🪙)</button>
+                <button class="btn" onclick="buyVehicle('Porsche Roxy', 55000)">Porsche Roxy Al (-55000 🪙)</button>
             </div>
+
+            <!-- TEKNOLOJİ -->
             <div id="loc-tech" class="location-view">
-                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png"></div>
-                <button class="btn" onclick="buyItem('Rig', 8000)">Kripto Rig Al</button>
+                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png" alt="Teknoloji"></div>
+                <h3>Teknoloji Dükkanı</h3>
+                <button class="btn" onclick="buyItem('Rig', 8000, 'rig')">Kripto Madenci Rig Al (-8000 🪙)</button>
             </div>
+
+            <!-- DÖVÜŞ DÜKKANI -->
             <div id="loc-fight" class="location-view">
-                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png"></div>
-                <button class="btn" onclick="buyWeapon('Muşta', 300)">Muşta Al</button>
+                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png" alt="Dövüş Dükkanı"></div>
+                <h3>Mühimmat Dükkanı</h3>
+                <button class="btn" onclick="buyWeapon('Muşta', 300, 5)">Muşta Al (+5 Hasar) (-300 🪙)</button>
+                <button class="btn" onclick="buyWeapon('Bıçak', 1500, 15)">Sustalı (+15 Hasar) (-1500 🪙)</button>
             </div>
+
+            <!-- DÖVÜŞ MEYDANI -->
             <div id="loc-arena" class="location-view">
-                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png"></div>
-                <button class="btn btn-danger" onclick="startFight()">Dövüşe Gir</button>
+                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png" alt="Arena"></div>
+                <h3>Dövüş Meydanı</h3>
+                <button class="btn btn-danger" onclick="startFight()">Ringe Çık (-20 Enerji)</button>
             </div>
+
+            <!-- KUMARHANE -->
             <div id="loc-casino" class="location-view">
-                <div class="photo-area"><img src="kumarhane.png"></div>
-                <input type="number" id="roulette-bet" placeholder="Bahis" class="btn">
-                <button class="btn" onclick="playRoulette()">Rulet</button>
-                <button class="btn btn-danger" onclick="playMines()">Mayın Tarlası</button>
+                <div class="photo-area"><img src="kumarhane.png" alt="Kumarhane"></div>
+                <h3>Grand Jester Casino</h3>
+                
+                <h4>Rulet Masası (%48 Şans)</h4>
+                <input type="number" id="roulette-bet" placeholder="Bahis Miktarı">
+                <button class="btn" onclick="playRoulette()">Kırmızıya Yatır (x2)</button>
+                
+                <h4 style="margin-top:15px;">Mayın Tarlası</h4>
+                <p>3 adımı geç, büyük ödülü kap!</p>
+                <button class="btn btn-danger" onclick="playMines()">Mayın Tarlasına Gir (500 🪙)</button>
             </div>
+
+            <!-- PAVYON -->
             <div id="loc-pavyon" class="location-view">
-                <div class="photo-area"><img src="pavyon.png"></div>
-                <button class="btn" onclick="doAction('pavyon')">Şampanya (1000 🪙)</button>
+                <div class="photo-area"><img src="pavyon.png" alt="Pavyon"></div>
+                <h3>Pavyon & Geceler</h3>
+                <button class="btn" onclick="doAction('pavyon')">Şampanya Patlat (-1000 🪙, +Moral)</button>
             </div>
+
+            <!-- KRİPTO -->
             <div id="loc-crypto" class="location-view">
-                <div class="photo-area"><img src="kripto merkezi.png"></div>
-                <button class="btn" onclick="doAction('crypto')">Geliri Topla</button>
+                <div class="photo-area"><img src="kripto merkezi.png" alt="Kripto"></div>
+                <h3>CyberTrade Kripto Ofisi</h3>
+                <p>Satın aldığın Rig'lerin ürettiği parayı buradan çekebilirsin.</p>
+                <button class="btn" onclick="doAction('crypto')">Madencilik Gelirlerini Topla</button>
             </div>
+
+            <!-- HAVAALANI -->
             <div id="loc-airport" class="location-view">
-                <button class="btn" onclick="doAction('fly')">Tatile Uç (2500 🪙)</button>
+                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png" alt="Havaalanı"></div>
+                <h3>Uluslararası Havalimanı</h3>
+                <button class="btn" onclick="doAction('fly')">Yurtdışı Tatiline Çık (-2500 🪙)</button>
             </div>
+
+            <!-- DÜĞÜN SALONU -->
             <div id="loc-wedding" class="location-view">
-                <button class="btn" onclick="doAction('marry')">Düğün Yap (5000 🪙)</button>
+                <div class="photo-area"><img src="teknoloji dükkanı dövüş dükkanı dövüş salonu.png" alt="Düğün Salonu"></div>
+                <h3>Saray Düğün Salonu</h3>
+                <button class="btn" onclick="doAction('marry')">Görkemli Düğün Yap (-5000 🪙)</button>
             </div>
+
         </div>
     </div>
-    <div class="log-box" id="log">[SİSTEM]: Şehir hayatı güncellendi!</div>
+
+    <!-- Sistem Logları -->
+    <div class="log-box" id="log">
+        [SİSTEM]: Jester Life Simulator Ultimate başladı! Görseller devrede.
+    </div>
 </div>
 
 <script>
-    let player = { hunger: 100, energy: 100, money: 5000, mood: 100 };
+    // Oyuncu Verileri
+    let player = { 
+        hunger: 100, energy: 100, money: 5000, mood: 100, 
+        rigs: 0, weapon: 'Yumruk', damage: 2, union: null, married: false 
+    };
+
+    const multipliers = { 'karaambar': 3, 'mobilya': 2, 'maden': 2.5 };
+    const unionNames = { 'karaambar': 'Kara Ambar Derneği', 'mobilya': 'Marangozlar Odası', 'maden': 'Madenciler Sendikası' };
+
+    // Arayüz Güncelleme
     function updateUI() {
-        document.getElementById('stat-hunger').innerText = player.hunger;
-        document.getElementById('stat-energy').innerText = player.energy;
-        document.getElementById('stat-money').innerText = player.money;
-        document.getElementById('stat-mood').innerText = player.mood;
+        document.getElementById('stat-hunger').innerText = `${player.hunger} / 100`;
+        document.getElementById('stat-energy').innerText = `${player.energy} / 100`;
+        document.getElementById('stat-money').innerText = `${player.money} 🪙`;
+        document.getElementById('stat-mood').innerText = `${player.mood} / 100`;
+        document.getElementById('stat-union').innerText = player.union ? unionNames[player.union] : "Yok";
+
+        // Ölüm Kontrolü
+        if(player.hunger <= 0) {
+            pushLog("💥 Açlıktan bayıldınız! Hastanede uyandınız, paranızın bir kısmı gitti.");
+            player.hunger = 50; player.energy = 50; player.money = Math.floor(player.money / 2);
+            updateUI();
+        }
     }
-    function go(id, btn) {
+
+    // Mekanlar Arası Geçiş
+    function go(locId, btn) {
         document.querySelectorAll('.location-view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('loc-'+id).classList.add('active');
+        document.getElementById(`loc-${locId}`).classList.add('active');
         btn.classList.add('active');
     }
-    function workJob(job) { 
-        let pay = {'kurye': 200, 'yazilim': 600};
-        player.money += pay[job];
-        pushLog(job + " işinden " + pay[job] + " kazandın.");
+
+    // Konsola Yazı Yazdırma
+    function pushLog(msg) {
+        const log = document.getElementById('log');
+        log.innerHTML += `<br>> ${msg}`;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    // Dernek Katılımı
+    function joinUnion(u) {
+        player.union = u;
+        pushLog(`✅ ${unionNames[u]} üyeliğin onaylandı! Artık meslek çarpanın aktif.`);
         updateUI();
     }
+
+    // İş Sistemi (Çarpanlı)
+    function workJob(job) {
+        let energyCost = 15;
+        if(player.energy < energyCost) return pushLog("❌ Enerjin yetersiz! Eve gidip uyu.");
+        
+        let basePay = { 'kurye': 200, 'yazilim': 600, 'mobilyaci': 100, 'tirci': 150, 'madenci': 200 }[job];
+        
+        // Çarpan Kontrolü
+        let bonus = 1;
+        if(player.union === 'karaambar' && job === 'tirci') bonus = multipliers['karaambar'];
+        if(player.union === 'mobilya' && job === 'mobilyaci') bonus = multipliers['mobilya'];
+        if(player.union === 'maden' && job === 'madenci') bonus = multipliers['maden'];
+
+        let totalPay = basePay * bonus;
+        player.energy -= energyCost;
+        player.hunger -= 5;
+        player.money += totalPay;
+
+        if(bonus > 1) pushLog(`💼 [DERNEK BONUSU x${bonus}] ${job.toUpperCase()} yaptın ve ${totalPay} 🪙 kazandın!`);
+        else pushLog(`💼 ${job.toUpperCase()} işinde çalıştın, ${totalPay} 🪙 kazandın.`);
+        
+        updateUI();
+    }
+
+    // Satın Almalar
+    function buyItem(name, cost, type) {
+        if(player.money < cost) return pushLog("❌ Paranız yetersiz.");
+        player.money -= cost;
+        if(type === 'hunger') { player.hunger = Math.min(100, player.hunger + 30); pushLog(`🍞 ${name} yedin, tokluğun arttı.`); }
+        if(type === 'rig') { player.rigs++; pushLog(`🖥️ Kripto Rig kuruldu. Ofisten gelirleri toplayabilirsin.`); }
+        updateUI();
+    }
+
+    function buyVehicle(name, cost) {
+        if(player.money < cost) return pushLog("❌ Galerici paranı eksik buldu.");
+        player.money -= cost; player.mood = 100;
+        pushLog(`🚗 Hayırlı olsun! ${name} satın aldın. Moralin tavan yaptı.`);
+        updateUI();
+    }
+
+    function buyWeapon(name, cost, dmg) {
+        if(player.money < cost) return pushLog("❌ Para çıkışmadı.");
+        player.money -= cost; player.weapon = name; player.damage = dmg;
+        pushLog(`⚔️ Yeni silah kuşandın: ${name} (Hasar: ${dmg})`);
+        updateUI();
+    }
+
+    // Genel Eylemler
+    function doAction(action) {
+        if(action === 'sleep') { player.energy = Math.min(100, player.energy + 40); player.hunger -= 10; pushLog("💤 Uyudun, enerjin doldu."); }
+        if(action === 'pavyon') { 
+            if(player.money < 1000) return pushLog("❌ Para yok!"); 
+            player.money -= 1000; player.mood = 100; pushLog("🥂 Şampanyalar patladı, krallar gibi eğlendin!"); 
+        }
+        if(action === 'crypto') { 
+            if(player.rigs === 0) return pushLog("❌ Rig cihazın yok. Teknoloji dükkanından al.");
+            let gain = player.rigs * 500; player.money += gain; pushLog(`💰 Madencilikten ${gain} 🪙 topladın.`);
+        }
+        if(action === 'fly') {
+            if(player.money < 2500) return pushLog("❌ Bilet parası yetersiz.");
+            player.money -= 2500; player.energy = 100; player.mood = 100; pushLog("✈️ Yurtdışı tatili harikaydı! Yenilendin.");
+        }
+        if(action === 'marry') {
+            if(player.married) return pushLog("❌ Zaten evlisin!");
+            if(player.money < 5000) return pushLog("❌ Düğün masrafı için paran yok.");
+            player.money -= 5000; player.married = true; pushLog("💍 Dünya evine girdin! Tebrikler.");
+        }
+        updateUI();
+    }
+
+    // Dövüş Sistemi
+    function startFight() {
+        if(player.energy < 20) return pushLog("❌ Dövüşecek halin yok.");
+        player.energy -= 20;
+        let winChance = player.damage > 5 ? 0.7 : 0.4; // Silahı varsa şansı artar
+        if(Math.random() < winChance) {
+            let reward = 800 + Math.floor(Math.random() * 500);
+            player.money += reward;
+            pushLog(`🥊 Rakipleri ${player.weapon} ile yıktın! Ödül: ${reward} 🪙`);
+        } else {
+            player.hunger -= 20;
+            pushLog("🛑 Ağır darbe aldın, dövüşü kaybettin!");
+        }
+        updateUI();
+    }
+
+    // Kumarhane
     function playRoulette() {
-        let b = parseInt(document.getElementById('roulette-bet').value);
-        if(player.money >= b) {
-            player.money -= b;
-            if(Math.random() > 0.5) { player.money += b*2; pushLog("Rulet kazandın!"); }
-            else pushLog("Rulet kaybettin.");
-        }
+        let bet = parseInt(document.getElementById('roulette-bet').value);
+        if(isNaN(bet) || bet <= 0) return pushLog("❌ Geçerli bahis gir.");
+        if(player.money < bet) return pushLog("❌ Yeterli çipin yok.");
+        player.money -= bet;
+        if(Math.random() < 0.48) { player.money += bet*2; pushLog(`🔴 RULET KAZANDI: +${bet*2} 🪙`); }
+        else { pushLog("⚫ RULET KAYBETTİ."); }
         updateUI();
     }
+
     function playMines() {
-        if(player.money >= 500) {
-            player.money -= 500;
-            if(Math.random() > 0.4) { player.money += 2500; pushLog("Mayın tarlası kazandın!"); }
-            else pushLog("Mayına bastın!");
-        }
+        if(player.money < 500) return pushLog("❌ 500 🪙 giriş ücreti lazım.");
+        player.money -= 500;
+        let win = true;
+        for(let i=0; i<3; i++) { if(Math.random() > 0.6) { win = false; break; } }
+        if(win) { player.money += 2500; pushLog("💣 MAYIN TARLASI: Şanslısın! 2500 🪙 kazandın."); }
+        else { pushLog("💥 MAYIN TARLASI: Mayına bastın."); }
         updateUI();
     }
-    function pushLog(m) { document.getElementById('log').innerHTML += "<br>" + m; }
-    updateUI();
+
+    // Zamanlayıcı (Açlık & Enerji düşüşü)
+    setInterval(() => {
+        player.hunger = Math.max(0, player.hunger - 1);
+        updateUI();
+    }, 15000); // Her 15 saniyede bir acıkır
+
 </script>
 </body>
 </html>
