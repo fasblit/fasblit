@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Şans Oyunu</title>
+    <title>Jester Casino</title>
     <style>
         * {
             margin: 0;
@@ -13,209 +13,495 @@
         }
 
         body {
-            background-color: #0b0b0b;
+            background-color: #070707;
             color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        .container {
-            text-align: center;
-            background: #121212;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #39ff14;
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
-            width: 90%;
-            max-width: 500px;
-        }
-
-        h1 {
-            color: #39ff14;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
-        }
-
-        .stats {
+        /* Giriş Ekranı */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            font-size: 18px;
-            font-weight: bold;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
 
-        .stat-box {
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
+        #welcome-screen h1 {
+            color: #39ff14;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px #39ff14;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Ana Panel */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        header {
+            background: #111;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #39ff14;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            margin-bottom: 30px;
+        }
+
+        header h2 {
+            color: #39ff14;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #39ff14;
+        }
+
+        .balance-box {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #fff;
         }
 
         #balance {
             color: #39ff14;
         }
 
-        .game-zone {
-            margin: 30px 0;
-            position: relative;
+        /* Oyun Menüsü */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        /* Rulet/Slot Şeridi */
-        .box-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+        .menu-btn {
+            background: #141414;
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .box {
-            width: 80px;
-            height: 80px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            transition: all 0.1s ease;
-        }
-
-        .box.active {
-            border-color: #39ff14;
+        .menu-btn:hover, .menu-btn.active {
+            background: #39ff14;
+            color: #000;
             box-shadow: 0 0 15px #39ff14;
-            transform: scale(1.1);
         }
 
-        /* Butonlar */
+        /* Oyun Alanları */
+        .game-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            display: none;
+        }
+
+        .game-card.active {
+            display: block;
+        }
+
+        .game-card h3 {
+            color: #39ff14;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Butonlar ve Girdiler */
         .btn {
             background: transparent;
             color: #39ff14;
             border: 2px solid #39ff14;
-            padding: 12px 30px;
-            font-size: 18px;
+            padding: 10px 25px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+            margin: 5px;
         }
 
         .btn:hover {
             background: #39ff14;
             color: #000;
-            box-shadow: 0 0 20px #39ff14;
+            box-shadow: 0 0 10px #39ff14;
         }
 
-        .btn:disabled {
-            border-color: #333;
-            color: #555;
-            cursor: not-allowed;
-            box-shadow: none;
+        input[type="number"], select {
+            background: #1a1a1a;
+            border: 1px solid #39ff14;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            width: 120px;
+            text-align: center;
+            font-size: 16px;
+            margin: 5px;
         }
 
-        .status-msg {
-            margin-top: 20px;
+        .result {
+            margin-top: 25px;
             font-size: 18px;
-            height: 25px;
-            font-weight: 500;
+            font-weight: bold;
+            min-height: 24px;
         }
 
-        .win { color: #39ff14; font-weight: bold; }
-        .lose { color: #ff3333; font-weight: bold; }
+        .win { color: #39ff14; }
+        .lose { color: #ff3333; }
+
+        /* Mines (Mayın) Izgarası */
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 8px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .mine-tile {
+            width: 50px;
+            height: 50px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mine-tile.revealed-gem { background: #113311; border-color: #39ff14; }
+        .mine-tile.revealed-bomb { background: #331111; border-color: #ff3333; }
     </style>
 </head>
 <body>
 
+    <!-- Giriş Ekranı -->
+    <div id="welcome-screen">
+        <h1>KUMARHANEYE HOŞ GELDİNİZ</h1>
+        <button class="btn" style="font-size: 20px; padding: 15px 40px;" onclick="enterCasino()">KASAYA KARŞI OYNA</button>
+    </div>
+
+    <!-- Ana Panel -->
     <div class="container">
-        <h1>Jester Spin</h1>
-        <p style="color: #888;">Şansını dene, neonları katla!</p>
+        <header>
+            <h2>JESTER CASINO PANEL</h2>
+            <div class="balance-box">Bakiye: <span id="balance">5000</span> 🪙</div>
+        </header>
 
-        <div class="stats">
-            <div class="stat-box">Bakiye: <span id="balance">1000</span> 🪙</div>
+        <!-- Oyun Seçim Menüsü -->
+        <div class="menu">
+            <button class="menu-btn active" onclick="switchGame('roulette', this)">RULET</button>
+            <button class="menu-btn" onclick="switchGame('blackjack', this)">BLACKJACK</button>
+            <button class="menu-btn" onclick="switchGame('mines', this)">MINES (MAYIN)</button>
+            <button class="menu-btn" onclick="switchGame('crash', this)">CRASH (UÇAK)</button>
         </div>
 
-        <div class="game-zone">
-            <div class="box-container">
-                <div class="box" id="box1">🍒</div>
-                <div class="box" id="box2">💎</div>
-                <div class="box" id="box3">🍀</div>
+        <!-- RULET -->
+        <div id="roulette" class="game-card active">
+            <h3>Avrupa Ruleti</h3>
+            <label>Bahis Miktarı:</label>
+            <input type="number" id="roulette-bet" value="100" min="10">
+            <label>Bahis Tipi:</label>
+            <select id="roulette-type">
+                <option value="red">Kırmızı (2 Katı)</option>
+                <option value="black">Siyah (2 Katı)</option>
+                <option value="7">7 Numarası (36 Katı)</option>
+            </select>
+            <br><br>
+            <button class="btn" onclick="playRoulette()">ÇARKI ÇEVİR</button>
+            <div id="roulette-result" class="result"></div>
+        </div>
+
+        <!-- BLACKJACK -->
+        <div id="blackjack" class="game-card">
+            <h3>Blackjack (21)</h3>
+            <div id="bj-setup">
+                <label>Bahis Miktarı:</label>
+                <input type="number" id="blackjack-bet" value="200" min="10">
+                <br><br>
+                <button class="btn" onclick="startBlackjack()">OYUNU BAŞLAT</button>
             </div>
-
-            <button class="btn" id="spinBtn" onclick="playGame()">ÇEVİR (100 🪙)</button>
+            <div id="bj-gameplay" style="display:none; margin-top:20px;">
+                <p id="bj-dealer-cards" style="font-size:18px; margin-bottom:10px;"></p>
+                <p id="bj-player-cards" style="font-size:18px; margin-bottom:20px;"></p>
+                <button class="btn" onclick="hitBlackjack()">KART ÇEK (HIT)</button>
+                <button class="btn" onclick="standBlackjack()">KAL (STAND)</button>
+            </div>
+            <div id="blackjack-result" class="result"></div>
         </div>
 
-        <div class="status-msg" id="status"></div>
+        <!-- MINES (Bilinmeyen Popüler Oyun 1) -->
+        <div id="mines" class="game-card">
+            <h3>Mines (5x5 Mayın Tarlası)</h3>
+            <p style="color:#888; font-size:14px;">Mayınlara basmadan elmasları topla. İstediğin an parayı çek!</p>
+            <div id="mines-setup">
+                <label>Bahis:</label>
+                <input type="number" id="mines-bet" value="100" min="10">
+                <label>Mayın Sayısı (1-24):</label>
+                <input type="number" id="mines-count" value="3" min="1" max="24">
+                <br><br>
+                <button class="btn" onclick="startMines()">AVCIYI BAŞLAT</button>
+            </div>
+            <div id="mines-gameplay" style="display:none;">
+                <div class="mines-grid" id="mines-board"></div>
+                <button class="btn" id="mines-cashout-btn" onclick="cashoutMines()">PARAYI ÇEK (0 🪙)</button>
+            </div>
+            <div id="mines-result" class="result"></div>
+        </div>
+
+        <!-- CRASH (Bilinmeyen Popüler Oyun 2) -->
+        <div id="crash" class="game-card">
+            <h3>Crash (Katlama Grafiği)</h3>
+            <p style="color:#888; font-size:14px;">Çarpan yükselirken patlamadan önce nakit çıkışı yap!</p>
+            <label>Bahis:</label>
+            <input type="number" id="crash-bet" value="100" min="10">
+            <br><br>
+            <button class="btn" id="crash-start-btn" onclick="startCrash()">UÇUŞU BAŞLAT</button>
+            <button class="btn" id="crash-cashout-btn" onclick="cashoutCrash()" style="display:none; background:#39ff14; color:#000;">NAKİT ÇIKMASI YAP</button>
+            <div id="crash-multiplier" style="font-size: 40px; font-weight: bold; margin-top: 20px; color: #39ff14;">1.00x</div>
+            <div id="crash-result" class="result"></div>
+        </div>
+
     </div>
 
     <script>
-        let balance = 1000;
-        const items = ['🍒', '💎', '🍀', '7️⃣', '❌'];
-        const spinBtn = document.getElementById('spinBtn');
-        const statusMsg = document.getElementById('status');
+        let balance = 5000;
 
-        function playGame() {
-            if (balance < 100) {
-                statusMsg.innerHTML = "<span class='lose'>Yetersiz Bakiye! Kasa her zaman kazanır.</span>";
-                return;
+        function enterCasino() {
+            const welcome = document.getElementById('welcome-screen');
+            welcome.style.opacity = '0';
+            setTimeout(() => welcome.style.display = 'none', 500);
+        }
+
+        function updateBalance(amount) {
+            balance += amount;
+            document.getElementById('balance').innerText = balance;
+        }
+
+        function switchGame(gameId, button) {
+            document.querySelectorAll('.game-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(gameId).classList.add('active');
+            button.classList.add('active');
+        }
+
+        // --- RULET SCRIPT ---
+        function playRoulette() {
+            const bet = parseInt(document.getElementById('roulette-bet').value);
+            const type = document.getElementById('roulette-type').value;
+            const resDiv = document.getElementById('roulette-result');
+
+            if (bet > balance) { resDiv.innerHTML = "<span class='lose'>Yetersiz Bakiye!</span>"; return; }
+            updateBalance(-bet);
+
+            const num = Math.floor(Math.random() * 37);
+            const color = (num === 0) ? 'green' : (num % 2 === 0 ? 'black' : 'red');
+
+            let win = false;
+            let payout = 0;
+
+            if (type === 'red' && color === 'red') { win = true; payout = bet * 2; }
+            else if (type === 'black' && color === 'black') { win = true; payout = bet * 2; }
+            else if (type === '7' && num === 7) { win = true; payout = bet * 36; }
+
+            if (win) {
+                updateBalance(payout);
+                resDiv.innerHTML = `<span class='win'>Gelen Sayı: ${num} (${color.toUpperCase()}). Tebrikler! +${payout} 🪙 kazandın!</span>`;
+            } else {
+                resDiv.innerHTML = `<span class='lose'>Gelen Sayı: ${num} (${color.toUpperCase()}). Kasa Kazandı! -${bet} 🪙</span>`;
+            }
+        }
+
+        // --- BLACKJACK SCRIPT ---
+        let bjBet = 0, playerHand = [], dealerHand = [];
+        function getCard() { return Math.floor(Math.random() * 10) + 2; }
+        function getSum(hand) { return hand.reduce((a, b) => a + b, 0); }
+
+        function startBlackjack() {
+            bjBet = parseInt(document.getElementById('blackjack-bet').value);
+            if (bjBet > balance) { document.getElementById('blackjack-result').innerHTML = "<span class='lose'>Yetersiz Bakiye!</span>"; return; }
+            updateBalance(-bjBet);
+
+            playerHand = [getCard(), getCard()];
+            dealerHand = [getCard()];
+
+            document.getElementById('bj-setup').style.display = 'none';
+            document.getElementById('bj-gameplay').style.display = 'block';
+            document.getElementById('blackjack-result').innerText = '';
+            updateBJUI();
+        }
+
+        function updateBJUI() {
+            document.getElementById('bj-dealer-cards').innerText = `Kasanın Kartları: ${dealerHand.join(', ')} (Toplam: ${getSum(dealerHand)})`;
+            document.getElementById('bj-player-cards').innerText = `Senin Kartların: ${playerHand.join(', ')} (Toplam: ${getSum(playerHand)})`;
+        }
+
+        function hitBlackjack() {
+            playerHand.push(getCard());
+            updateBJUI();
+            if (getSum(playerHand) > 21) { endBJ(false, "21'i geçtin, kaybettin!"); }
+        }
+
+        function standBlackjack() {
+            while (getSum(dealerHand) < 17) { dealerHand.push(getCard()); }
+            updateBJUI();
+            
+            let pSum = getSum(playerHand), dSum = getSum(dealerHand);
+            if (dSum > 21 || pSum > dSum) endBJ(true, "Kazandın!");
+            else if (pSum === dSum) endBJ('tie', "Berabere!");
+            else endBJ(false, "Kasa kazandı!");
+        }
+
+        function endBJ(status, msg) {
+            const resDiv = document.getElementById('blackjack-result');
+            if (status === true) { updateBalance(bjBet * 2); resDiv.innerHTML = `<span class='win'>${msg} +${bjBet * 2} 🪙</span>`; }
+            else if (status === 'tie') { updateBalance(bjBet); resDiv.innerHTML = `<span class='win'>${msg} Parayı geri aldın.</span>`; }
+            else { resDiv.innerHTML = `<span class='lose'>${msg}</span>`; }
+
+            document.getElementById('bj-setup').style.display = 'block';
+            document.getElementById('bj-gameplay').style.display = 'none';
+        }
+
+        // --- MINES SCRIPT ---
+        let minesBet = 0, totalMines = 0, minePositions = [], revealedCount = 0, currentMultiplier = 1.0;
+        function startMines() {
+            minesBet = parseInt(document.getElementById('mines-bet').value);
+            totalMines = parseInt(document.getElementById('mines-count').value);
+            if (minesBet > balance) { document.getElementById('mines-result').innerHTML = "<span class='lose'>Yetersiz Bakiye!</span>"; return; }
+            updateBalance(-minesBet);
+
+            minePositions = [];
+            while(minePositions.length < totalMines) {
+                let r = Math.floor(Math.random() * 25);
+                if(!minePositions.includes(r)) minePositions.push(r);
             }
 
-            // Bakiyeyi düş ve güncelle
-            balance -= 100;
-            document.getElementById('balance').innerText = balance;
+            revealedCount = 0; currentMultiplier = 1.0;
+            document.getElementById('mines-setup').style.display = 'none';
+            document.getElementById('mines-gameplay').style.display = 'block';
+            document.getElementById('mines-result').innerText = '';
             
-            spinBtn.disabled = true;
-            statusMsg.innerText = "Dönüyor...";
+            const board = document.getElementById('mines-board');
+            board.innerHTML = '';
+            for(let i=0; i<25; i++) {
+                let tile = document.createElement('div');
+                tile.className = 'mine-tile';
+                tile.dataset.id = i;
+                tile.onclick = () => clickMineTile(tile, i);
+                board.appendChild(tile);
+            }
+            updateMinesCashoutBtn();
+        }
 
-            let counter = 0;
-            const interval = setInterval(() => {
-                // Rastgele semboller göstererek dönme efekti yarat
-                document.getElementById('box1').innerText = items[Math.floor(Math.random() * items.length)];
-                document.getElementById('box2').innerText = items[Math.floor(Math.random() * items.length)];
-                document.getElementById('box3').innerText = items[Math.floor(Math.random() * items.length)];
-                
-                counter++;
-                if (counter > 15) {
-                    clearInterval(interval);
-                    determineResult();
+        function clickMineTile(tile, id) {
+            if(tile.style.pointerEvents === 'none') return;
+            tile.style.pointerEvents = 'none';
+
+            if (minePositions.includes(id)) {
+                tile.innerHTML = '💥'; tile.classList.add('revealed-bomb');
+                endMines(false);
+            } else {
+                tile.innerHTML = '💎'; tile.classList.add('revealed-gem');
+                revealedCount++;
+                currentMultiplier += (totalMines * 0.15);
+                updateMinesCashoutBtn();
+                if (revealedCount === (25 - totalMines)) endMines(true);
+            }
+        }
+
+        function updateMinesCashoutBtn() {
+            let currentWin = Math.floor(minesBet * currentMultiplier);
+            document.getElementById('mines-cashout-btn').innerText = `PARAYI ÇEK (${currentWin} 🪙) - ${currentMultiplier.toFixed(2)}x`;
+        }
+
+        function cashoutMines() { endMines(true); }
+
+        function endMines(won) {
+            const resDiv = document.getElementById('mines-result');
+            document.querySelectorAll('.mine-tile').forEach((t, i) => {
+                t.style.pointerEvents = 'none';
+                if(minePositions.includes(i)) { t.innerHTML = '💥'; t.classList.add('revealed-bomb'); }
+            });
+
+            if (won) {
+                let winAmt = Math.floor(minesBet * currentMultiplier);
+                updateBalance(winAmt);
+                resDiv.innerHTML = `<span class='win'>Başarılı Nakit Çıkışı! +${winAmt} 🪙 kazandın!</span>`;
+            } else {
+                resDiv.innerHTML = "<span class='lose'>Mayına Bastın! Kasa parayı kaptı.</span>";
+            }
+            document.getElementById('mines-setup').style.display = 'block';
+            document.getElementById('mines-gameplay').style.display = 'none';
+        }
+
+        // --- CRASH SCRIPT ---
+        let crashBet = 0, crashInterval, currentCrashMult = 1.0, crashExplodePoint = 0, isFlying = false;
+        function startCrash() {
+            crashBet = parseInt(document.getElementById('crash-bet').value);
+            if (crashBet > balance) { document.getElementById('crash-result').innerHTML = "<span class='lose'>Yetersiz Bakiye!</span>"; return; }
+            updateBalance(-crashBet);
+
+            isFlying = true; currentCrashMult = 1.0;
+            crashExplodePoint = (Math.random() * 5 + 1).toFixed(2); // Rastgele patlama noktası (1-6 arası)
+            if(Math.random() < 0.1) crashExplodePoint = 1.0; // %10 ihtimalle anında patlama
+
+            document.getElementById('crash-start-btn').style.display = 'none';
+            document.getElementById('crash-cashout-btn').style.display = 'inline-block';
+            document.getElementById('crash-result').innerText = '';
+
+            crashInterval = setInterval(() => {
+                currentCrashMult += 0.04;
+                document.getElementById('crash-multiplier').innerText = currentCrashMult.toFixed(2) + 'x';
+
+                if (currentCrashMult >= crashExplodePoint) {
+                    clearInterval(crashInterval);
+                    isFlying = false;
+                    document.getElementById('crash-multiplier').style.color = '#ff3333';
+                    document.getElementById('crash-multiplier').innerText = 'PATLADI! @ ' + crashExplodePoint + 'x';
+                    document.getElementById('crash-result').innerHTML = `<span class='lose'>Uçak patladı, -${crashBet} 🪙 kaybettin.</span>`;
+                    resetCrashUI();
                 }
             }, 100);
         }
 
-        function determineResult() {
-            spinBtn.disabled = false;
-            
-            // Sonuçları al
-            const res1 = document.getElementById('box1').innerText;
-            const res2 = document.getElementById('box2').innerText;
-            const res3 = document.getElementById('box3').innerText;
+        function cashoutCrash() {
+            if(!isFlying) return;
+            clearInterval(crashInterval);
+            isFlying = false;
 
-            // Kazanma durumları
-            if (res1 === res2 && res2 === res3) {
-                if (res1 === '💎' || res1 === '7️⃣') {
-                    balance += 1000;
-                    statusMsg.innerHTML = `<span class='win'>BÜYÜK VURGUN! +1000 🪙 kazandın! (${res1})</span>`;
-                } else if (res1 === '❌') {
-                    statusMsg.innerHTML = "<span class='lose'>Üç Tane X! Tamamen kaybettin.</span>";
-                } else {
-                    balance += 500;
-                    statusMsg.innerHTML = `<span class='win'>Tebrikler! +500 🪙 kazandın! (${res1})</span>`;
-                }
-            } else if (res1 === res2 || res2 === res3 || res1 === res3) {
-                balance += 150;
-                statusMsg.innerHTML = "<span class='win'>Çifte şans! +150 🪙 kazandın.</span>";
-            } else {
-                statusMsg.innerHTML = "<span class='lose'>Kaybettin, tekrar dene!</span>";
-            }
+            let finalWin = Math.floor(crashBet * currentCrashMult);
+            updateBalance(finalWin);
+            document.getElementById('crash-result').innerHTML = `<span class='win'>Harika Zamanlama! @ ${currentCrashMult.toFixed(2)}x oranından nakit çıktın ve +${finalWin} 🪙 kazandın!</span>`;
+            resetCrashUI();
+        }
 
-            document.getElementById('balance').innerText = balance;
+        function resetCrashUI() {
+            document.getElementById('crash-start-btn').style.display = 'inline-block';
+            document.getElementById('crash-cashout-btn').style.display = 'none';
+            setTimeout(() => { document.getElementById('crash-multiplier').style.color = '#39ff14'; }, 2000);
         }
     </script>
 </body>
