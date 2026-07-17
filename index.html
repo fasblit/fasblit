@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Şans Oyunu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0b0b;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: #121212;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #39ff14;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #39ff14;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        #balance {
+            color: #39ff14;
+        }
+
+        .game-zone {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        /* Rulet/Slot Şeridi */
+        .box-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            width: 80px;
+            height: 80px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            transition: all 0.1s ease;
+        }
+
+        .box.active {
+            border-color: #39ff14;
+            box-shadow: 0 0 15px #39ff14;
+            transform: scale(1.1);
+        }
+
+        /* Butonlar */
+        .btn {
+            background: transparent;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+
+        .btn:hover {
+            background: #39ff14;
+            color: #000;
+            box-shadow: 0 0 20px #39ff14;
+        }
+
+        .btn:disabled {
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            font-size: 18px;
+            height: 25px;
+            font-weight: 500;
+        }
+
+        .win { color: #39ff14; font-weight: bold; }
+        .lose { color: #ff3333; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Jester Spin</h1>
+        <p style="color: #888;">Şansını dene, neonları katla!</p>
+
+        <div class="stats">
+            <div class="stat-box">Bakiye: <span id="balance">1000</span> 🪙</div>
+        </div>
+
+        <div class="game-zone">
+            <div class="box-container">
+                <div class="box" id="box1">🍒</div>
+                <div class="box" id="box2">💎</div>
+                <div class="box" id="box3">🍀</div>
+            </div>
+
+            <button class="btn" id="spinBtn" onclick="playGame()">ÇEVİR (100 🪙)</button>
+        </div>
+
+        <div class="status-msg" id="status"></div>
+    </div>
+
+    <script>
+        let balance = 1000;
+        const items = ['🍒', '💎', '🍀', '7️⃣', '❌'];
+        const spinBtn = document.getElementById('spinBtn');
+        const statusMsg = document.getElementById('status');
+
+        function playGame() {
+            if (balance < 100) {
+                statusMsg.innerHTML = "<span class='lose'>Yetersiz Bakiye! Kasa her zaman kazanır.</span>";
+                return;
+            }
+
+            // Bakiyeyi düş ve güncelle
+            balance -= 100;
+            document.getElementById('balance').innerText = balance;
+            
+            spinBtn.disabled = true;
+            statusMsg.innerText = "Dönüyor...";
+
+            let counter = 0;
+            const interval = setInterval(() => {
+                // Rastgele semboller göstererek dönme efekti yarat
+                document.getElementById('box1').innerText = items[Math.floor(Math.random() * items.length)];
+                document.getElementById('box2').innerText = items[Math.floor(Math.random() * items.length)];
+                document.getElementById('box3').innerText = items[Math.floor(Math.random() * items.length)];
+                
+                counter++;
+                if (counter > 15) {
+                    clearInterval(interval);
+                    determineResult();
+                }
+            }, 100);
+        }
+
+        function determineResult() {
+            spinBtn.disabled = false;
+            
+            // Sonuçları al
+            const res1 = document.getElementById('box1').innerText;
+            const res2 = document.getElementById('box2').innerText;
+            const res3 = document.getElementById('box3').innerText;
+
+            // Kazanma durumları
+            if (res1 === res2 && res2 === res3) {
+                if (res1 === '💎' || res1 === '7️⃣') {
+                    balance += 1000;
+                    statusMsg.innerHTML = `<span class='win'>BÜYÜK VURGUN! +1000 🪙 kazandın! (${res1})</span>`;
+                } else if (res1 === '❌') {
+                    statusMsg.innerHTML = "<span class='lose'>Üç Tane X! Tamamen kaybettin.</span>";
+                } else {
+                    balance += 500;
+                    statusMsg.innerHTML = `<span class='win'>Tebrikler! +500 🪙 kazandın! (${res1})</span>`;
+                }
+            } else if (res1 === res2 || res2 === res3 || res1 === res3) {
+                balance += 150;
+                statusMsg.innerHTML = "<span class='win'>Çifte şans! +150 🪙 kazandın.</span>";
+            } else {
+                statusMsg.innerHTML = "<span class='lose'>Kaybettin, tekrar dene!</span>";
+            }
+
+            document.getElementById('balance').innerText = balance;
+        }
+    </script>
+</body>
+</html>
